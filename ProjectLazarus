@@ -1057,7 +1057,7 @@ local Character = Client.Character;
     function Viewmodel.Set()
         coroutine.wrap(function()
             if (Game.IsAlive()) then
-                local Model = Ignore:WaitForChild("PlayerFolder"):FindFirstChild("Model");
+                local Model = Ignore:WaitForChild("PlayerFolder", 300):FindFirstChild("Model");
 
                 if (Model) then
                     if not (ModelsFolder:FindFirstChild(GetGun().WeaponName)) then
@@ -1839,8 +1839,6 @@ local Character = Client.Character;
         Connection:closeall();
 
         Library.Unloaded = true;
-
-        hookmetamethod(game, "__index", OldIndex);
 
         hookmetamethod(game, "__namecall", OldNamecall);
     end)
