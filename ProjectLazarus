@@ -1,52 +1,41 @@
------ {{ Made by xen.index
--- [[ Update date 6/1/2025
--- [[ Skid status: true
-
 ----- {{ Starting Checks;
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/g4s10r/Scripts/main/Linoria"))();
-
 if (game.PlaceId ~= 443406476) then
-    error(string.format("[SK22T] - Unsupported game"));
+    error(string.format("[Sk22t] - Unsupported game"));
 end
 
-if not (listfiles or hookmetamethod or getcustomasset) then
-    Library:Notify("[FATAL-ERROR] - Your exploit doesn't support required functions", math.huge);
-    return;
-end
-
-if (not LPH_OBFUSCATED) then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Luraph/macrosdk/main/luraphsdk.lua"))()
+if not (listfiles and hookmetamethod and getcustomasset) then
+    error("[Sk22t] - Your exploit does not meet the requirements");
 end
 
 ----- {{ Includes;
 
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/g4s10r/Scripts/main/Linoria"))();
 local ThemeManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/g4s10r/Scripts/refs/heads/main/ThemeManager"))()
-local SaveManager  = loadstring(game:HttpGet("https://raw.githubusercontent.com/g4s10r/Scripts/refs/heads/main/SaveManager"))()
-local Signal       = loadstring(game:HttpGet("https://raw.githubusercontent.com/g4s10r/Scripts/main/GoodSignal"))();
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/g4s10r/Scripts/refs/heads/main/SaveManager"))()
+local Signal = loadstring(game:HttpGet("https://raw.githubusercontent.com/g4s10r/Scripts/main/GoodSignal"))();
 
 ----- {{ Constants;
 
-local Players      = cloneref(game:GetService("Players"));
-local Workspace    = cloneref(game:GetService("Workspace"));
-local RunService   = cloneref(game:GetService("RunService"));
-local LogService   = cloneref(game:GetService("LogService"));
-local HttpService  = cloneref(game:GetService("HttpService"));
+local Players = cloneref(game:GetService("Players"));
+local Workspace = cloneref(game:GetService("Workspace"));
+local RunService = cloneref(game:GetService("RunService"));
+local HttpService = cloneref(game:GetService("HttpService"));
 local TweenService = cloneref(game:GetService("TweenService"));
-local UserInput    = cloneref(game:GetService("UserInputService"));
-local Storage      = cloneref(game:GetService("ReplicatedStorage"));
-local Baddies      = cloneref(Workspace:FindFirstChild("Baddies"));
-local Camera       = cloneref(Workspace.CurrentCamera);
-local Client       = Players.LocalPlayer;
+local UserInput = cloneref(game:GetService("UserInputService"));
+local Storage = cloneref(game:GetService("ReplicatedStorage"));
+local Baddies = cloneref(Workspace:FindFirstChild("Baddies"));
+local Camera = cloneref(Workspace.CurrentCamera);
+local Client = Players.LocalPlayer;
 
 ----- {{ Variables;
 
 local RenderBinds = {"Gun", "Aimbot", "Loop"};
-local Mouse       = Client:GetMouse();
-local Interact    = Workspace:WaitForChild("Interact", 0.25);
-local Ignore      = Workspace:WaitForChild("Ignore", 0.25);
-local MysteryBox  = Interact:FindFirstChild("MysteryBox", true);
-local Character   = Client.Character;
+local Mouse = cloneref(Client:GetMouse());
+local Interact = Workspace:WaitForChild("Interact", 0.25);
+local Ignore = Workspace:WaitForChild("Ignore", 0.25);
+local MysteryBox = Interact:FindFirstChild("MysteryBox", true);
+local Character = Client.Character;
 
 ----- {{ Variable Table;
 
@@ -236,11 +225,6 @@ local Character   = Client.Character;
         Name = "[Sk22t.dev]";
     });
 
-    local WorkspaceFolder = Utility.Instance("Folder", {
-        Parent = Workspace;
-        Name = Utility.RandomName();
-    });
-
     local SoundsFolder = Utility.Instance("Folder", {
         Parent = DirectoryFolder;
         Name = "Sounds";
@@ -311,21 +295,12 @@ local Character   = Client.Character;
 
 ------- }}
 
------ {{ Anti-cheat bypass;
+----- {{ Mem-spike bypass;
 
     if (hookfunction) then
-        local OldGC; OldGC = hookfunction(getrenv().gcinfo, newcclosure(function()
-            return math.random(900, 1200);
+        local _gcinfo; _gcinfo = hookfunction(getrenv().gcinfo, newcclosure(function()
+            return math.random(1000, 1050);
         end))
-    end
-
-    local Script = Client:FindFirstChildOfClass("LocalScript");
-    if Script then Script:Remove(); end
-
-    for _, Connection in next, getconnections(LogService.MessageOut) do
-        if not (checkcaller()) then
-            Connection:Disable();
-        end
     end
 
 ------- }}
@@ -540,7 +515,7 @@ local Character   = Client.Character;
     function Game.onRespawn()
         table.clear(Game.Functions);
 
-        WeaponScript = Character:WaitForChild("WeaponScript", 1);
+        WeaponScript = Character:WaitForChild("WeaponScript", 3);
         if (WeaponScript) then
             Game.GetFunction(WeaponScript, "OnReloadInput");
             Game.GetFunction(WeaponScript, "OnFireWeaponInput");
@@ -611,6 +586,8 @@ local Character   = Client.Character;
 
                 task.wait(0.0125);
             end
+        else
+            Library:Notify("[Sk22t] - There must be at least 1 zombie alive!", 3);
         end
     end
     
@@ -675,7 +652,7 @@ local Character   = Client.Character;
 
     local GunSignal = _GunSignal._signal;
 
-    RunService:BindToRenderStep("Gun", 300, LPH_NO_VIRTUALIZE(function()
+    RunService:BindToRenderStep("Gun", 300, function()
         if (Game.IsAlive()) then
             local Gun = GetGun();
             if (Gun ~= nil) then
@@ -720,7 +697,7 @@ local Character   = Client.Character;
                 end) 
             end
         end
-    end))
+    end)
 
 ------- }}
 
@@ -816,6 +793,11 @@ local Character   = Client.Character;
 
     function Shoot()
         local Gun = GetGun();
+
+        if (not WeaponScript) then
+            return;
+        end
+        
         local FireFn = Game.Functions.OnFireWeaponInput or Game.GetFunction(WeaponScript, "OnFireWeaponInput");
         local ReloadFn = Game.Functions.OnReloadInput or Game.GetFunction(WeaponScript, "OnReloadInput");
 
@@ -880,7 +862,7 @@ local Character   = Client.Character;
         Color = Color3.new(1, 1, 1),
     });
 
-    RunService:BindToRenderStep("Aimbot", 199, LPH_NO_VIRTUALIZE(function()
+    RunService:BindToRenderStep("Aimbot", 199, function()
         if (Game.IsAlive() and Sk22t.Aimbot.Autobot.Enabled) then
             local Target = GetClosestToCharacter(Baddies);
             if (Target ~= nil) then
@@ -897,7 +879,7 @@ local Character   = Client.Character;
             Circle.Color  = Sk22t.Aimbot.Circle.Color;
             Circle.Transparency = Sk22t.Aimbot.Circle.Transparency;
         end
-    end))
+    end)
 
 ------- }}
 
@@ -1110,19 +1092,9 @@ local Character   = Client.Character;
     local HitmarkerSettings = Sk22t.Visuals.Hitmarker;
     local SoundSettings = Sk22t.Visuals.Sound;
 
-    local OldIndex; OldIndex = hookmetamethod(game, "__index", LPH_NO_VIRTUALIZE(function(...)
-        local Args = {...};
-        local self, Key = Args[1], Args[2];
-
-        if (self == WorkspaceFolder and not checkcaller()) then
-            return nil
-        end
-
-        return OldIndex(...);
-    end))
-
-    local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", LPH_NO_VIRTUALIZE(function(...)
+    local OldNamecall; OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
         local Args = {...}
+
         if (getnamecallmethod() == "Raycast" and Sk22t.Aimbot.Enabled and not checkcaller() and getcallingscript().Name == "WeaponScript") then
             local Target = GetClosest(Baddies);
             if (Target) then
@@ -1155,7 +1127,7 @@ local Character   = Client.Character;
                     local Humanoid = Remote.Parent;
                     local DamageDealt = Args[2]["Damage"];
 
-                    if (DamageDealt == 0/0 or DamageDealt == nan) then
+                    if (DamageDealt ~= DamageDealt) then
                         DamageDealt = math.huge;
                     end
 
@@ -1198,12 +1170,17 @@ local Character   = Client.Character;
 ----- {{ Connections;
 
     local LoopTick = tick();
-    RunService:BindToRenderStep("Loop", 300, LPH_NO_VIRTUALIZE(function() -- Child added doesn't work for last zombie for some reason
+    RunService:BindToRenderStep("Loop", 300, function() -- Child added doesn't work for last zombie for some reason
         if (Game.IsAlive()) then
             -- Auto kill
             if (Sk22t.Aimbot.AutoKill and tick() - LoopTick >= 0.25) then
                 Game.KillAll();
                 LoopTick = tick();
+            end
+
+            -- Acquire weapon scipt if nil
+            if (not WeaponScript or not WeaponScript:IsDescendantOf(Workspace)) then
+                WeaponScript = Character:FindFirstChild("WeaponScript");
             end
             
             -- Infinite stamina
@@ -1224,7 +1201,7 @@ local Character   = Client.Character;
                 Viewmodel.Set();
             end
         end
-    end))
+    end)
 
     Connection.new(Client.CharacterAdded, function(New)
         Character = New;
@@ -1380,7 +1357,7 @@ local Character   = Client.Character;
     });
 
     DamageDependency:AddToggle("OneShot", {
-        Text = "One Shot (Reccomended)",
+        Text = "One Shot",
         Default = false,
         Tooltip = "One shot every zombie regardless of health.",
         Callback = function(Value)
@@ -1863,13 +1840,9 @@ local Character   = Client.Character;
 
         Library.Unloaded = true;
 
-        hookmetamethod(game, "__index", function(...)
-            return OldIndex(...);
-        end)
+        hookmetamethod(game, "__index", OldIndex);
 
-        hookmetamethod(game, "__namecall", function(...)
-            return OldNamecall(...);
-        end)
+        hookmetamethod(game, "__namecall", OldNamecall);
     end)
 
     local MenuGroup = Tabs.Menu:AddLeftGroupbox("Menu")
