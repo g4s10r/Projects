@@ -8,6 +8,8 @@ if not (listfiles and hookmetamethod and getcustomasset) then
     error("[Sk22t] - Your exploit does not meet the requirements");
 end
 
+local StartTime = time();
+
 ----- {{ Includes;
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/g4s10r/Scripts/main/Linoria"))();
@@ -1860,4 +1862,7 @@ local Character = Client.Character;
 
     SaveManager:LoadAutoloadConfig();
  
+    Library:Notify(string.format("[Sk22t] - Loaded in %.1f", time() - StartTime), 7.5);
+    Library:Notify(string.format("[Sk22t] - Rewrite for Project Lazarus soon!", time() - StartTime), 7.5);
+
 ------- }}
