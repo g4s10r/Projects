@@ -1,0 +1,48 @@
+local TS = require(game:GetService("ReplicatedStorage").TS)();
+local Teams = TS.Teams;
+local Characters = TS.Characters;
+
+local Client = game:GetService("Players").LocalPlayer;
+local Camera = game:GetService("Workspace").CurrentCamera;
+local Players = debug.getupvalue(Characters.GetCharacter, 1);
+local Mouse = cloneref(Client:GetMouse());
+
+function GetClosest()
+    local Target;
+    local Distance = math.huge;
+
+    for Player, Character in next, Players do
+        if (not Teams.ArePlayersFriendly(Teams, Client, Player) and Character and Character.IsDescendantOf(Character, workspace) and Character.Body and Character.Body.FindFirstChild(Character.Body, "Head")) then
+            local Head = Character.Body.FindFirstChild(Character.Body, "Head");
+            if (Head) then
+                local ScreenPos, OnScreen = Camera.WorldToViewportPoint(Camera, Head.Position);
+
+                if (OnScreen) then
+                    local MouseDistance = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(ScreenPos.X, ScreenPos.Y)).Magnitude;
+                    if (MouseDistance < Distance) then
+                        Distance = MouseDistance;
+                        Target = Head;
+                    end
+                end
+            end
+        end
+    end
+
+    return Target;
+end
+
+local __namecall; __namecall = hookmetamethod(workspace, "__namecall", newcclosure(function(...)
+	if (getnamecallmethod() == "Raycast" and (string.find(debug.traceback(), "Update") or string.find(debug.traceback(), "Shoot"))) then
+		local self, Origin, Direction, Filter = ...;
+		local Closest = GetClosest();
+        setnamecallmethod("Raycast");
+
+		if (Closest) then
+			Direction = (Closest.Position - Origin);
+            Filter.FilterDescendantsInstances = {Closest.Parent.Parent};
+			return __namecall(self, Origin, Direction, Filter);
+		end
+	end
+
+	return __namecall(...);
+end));
