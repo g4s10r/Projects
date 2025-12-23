@@ -1,3 +1,0 @@
--- If you want to view the source refer to https://raw.githubusercontent.com/g4s10r/Projects/refs/heads/main/ProjectLazarusSource
--- This is NOT the awaited remake, just uploaded to luarmor for the statistics
-loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/92ef4c61d5e36310480e4a3402a2b233.lua"))()
