@@ -9,6 +9,11 @@ local Supported = {
 };
 
 return function(script_key)
+    if (getgenv().Sk22t) then
+        Notify.new(5, "Script is already loaded!", nil, Color3.fromRGB(255, 0, 0));
+        return;
+    end
+
     if (Supported[PlaceId] ~= nil and script_key) then
         local api = loadstring(game:HttpGet("https://sdkapi-public.luarmor.net/library.lua"))();
         api.script_id = Supported[PlaceId];
