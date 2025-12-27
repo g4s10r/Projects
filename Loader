@@ -1,0 +1,44 @@
+------- [ loader ]
+
+local Notify = loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/g4s10r/Scripts/refs/heads/main/Notification"))();
+local PlaceId = game.PlaceId;
+local Supported = {
+    [443406476] = "14683048f189a4461c206c0d5cae0c5d";
+    [10165583746] = "6e4126af36402ce33dc9f17d53101153";
+    [93978595733734] = "ee3eeb5efb4d7aeef6ef3d8191cf7589";
+};
+
+return function(script_key)
+    if (Supported[PlaceId] ~= nil and script_key) then
+        local api = loadstring(game:HttpGet("https://sdkapi-public.luarmor.net/library.lua"))();
+        api.script_id = Supported[PlaceId];
+
+        local status = api.check_key(script_key);
+
+        if (status.code == "KEY_VALID") then
+            Notify.new(5, "Loading, please wait...", nil, Color3.fromRGB(0, 255, 0));
+            getfenv(0).script_key = script_key;
+            api.load_script();
+            return;
+        elseif (status.code == "KEY_HWID_LOCKED") then
+            Notify.new(7.5, "Key linked to a different HWID. Please reset it using our Discord bot", nil, Color3.fromRGB(255, 0, 0));
+            return;
+        elseif (status.code == "KEY_INCORRECT") then
+            Notify.new(7.5, "Key is wrong or deleted!", nil, Color3.fromRGB(255, 0, 0));
+            return ;   
+        else
+            Notify.new(7.5, "Key check failed", nil, Color3.fromRGB(255, 0, 0));
+            return;
+        end
+    else
+        if (not script_key) then
+            Notify.new(5, "Please enter a key!", nil, Color3.fromRGB(255, 0, 0));
+            return;
+        end
+        
+        if (not Supported[PlaceId]) then
+            Notify.new(5, "Unsupported game", nil, Color3.fromRGB(255, 0, 0));
+            return;
+        end
+    end
+end
