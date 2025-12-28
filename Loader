@@ -1,5 +1,10 @@
 ------- [ loader ]
 
+if (getgenv().Sk22t) then
+    Notify.new(5, "Script is already loaded!", nil, Color3.fromRGB(255, 0, 0));
+    return function(...) end;
+end
+
 if (getgenv().Loader) then
     Notify.new(5, "Wait 5 seconds to re-execute loader!", nil, Color3.fromRGB(255, 0, 0));
     return function(...) end;
@@ -15,16 +20,6 @@ local Supported = {
 };
 
 return function(script_key)
-    if (getgenv().Sk22t) then
-        Notify.new(5, "Script is already loaded!", nil, Color3.fromRGB(255, 0, 0));
-
-        task.delay(5, function()
-            getgenv().Loader = nil;
-        end);
-
-        return;
-    end
-
     getgenv().Loader = true;
 
     if (Supported[PlaceId] ~= nil and script_key) then
