@@ -6,8 +6,6 @@ if (getgenv().Notify) then
 end
 
 getgenv().Notify = loadstring([[
-    ------- [ notification ]
-
     local Notification = {};
 
     cloneref = cloneref or function(...)
