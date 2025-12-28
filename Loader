@@ -17,6 +17,11 @@ local Supported = {
 return function(script_key)
     if (getgenv().Sk22t) then
         Notify.new(5, "Script is already loaded!", nil, Color3.fromRGB(255, 0, 0));
+
+        task.delay(5, function()
+            getgenv().Loader = nil;
+        end);
+
         return;
     end
 
@@ -24,7 +29,12 @@ return function(script_key)
 
     if (Supported[PlaceId] ~= nil and script_key) then
         if (string.find(script_key, " ", 1, true)) then
-            Notify.new(7.5, "Key cannot contain a space character!", nil, Color3.fromRGB(255, 0, 0));
+            Notify.new(5, "Key cannot contain a space character!", nil, Color3.fromRGB(255, 0, 0));
+
+            task.delay(5, function()
+                getgenv().Loader = nil;
+            end);
+
             return;
         end
 
@@ -40,9 +50,9 @@ return function(script_key)
         elseif (status.code == "KEY_HWID_LOCKED") then
             Notify.new(7.5, "Key linked to a different HWID. Please reset it using our Discord bot", nil, Color3.fromRGB(255, 0, 0));
         elseif (status.code == "KEY_INCORRECT") then
-            Notify.new(7.5, "Key is wrong or deleted!", nil, Color3.fromRGB(255, 0, 0)); 
+            Notify.new(5, "Key is wrong or deleted!", nil, Color3.fromRGB(255, 0, 0)); 
         else
-            Notify.new(7.5, "Key check failed", nil, Color3.fromRGB(255, 0, 0));
+            Notify.new(5, "Key check failed", nil, Color3.fromRGB(255, 0, 0));
         end
     else
         if (not script_key) then
