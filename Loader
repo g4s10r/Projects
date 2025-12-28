@@ -1,7 +1,7 @@
 ------- [ loader ]
 
 if (getgenv().Loader) then
-    Notify.new(5, "Loader is already executed!", nil, Color3.fromRGB(255, 0, 0));
+    Notify.new(5, "Wait 5 seconds to re-execute loader!", nil, Color3.fromRGB(255, 0, 0));
     return function(...) end;
 end
 
@@ -54,7 +54,7 @@ return function(script_key)
         end
     end
 
-    task.delay(1, function()
+    task.delay(5, function()
         getgenv().Loader = nil;
     end);
 end
