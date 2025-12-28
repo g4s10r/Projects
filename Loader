@@ -5,7 +5,7 @@ if (getgenv().Loader) then
     return function(...) end;
 end
 
-getgenv().Notify = loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/g4s10r/Scripts/refs/heads/main/Notification"))();
+getgenv().Notify = Notify or loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/g4s10r/Scripts/refs/heads/main/Notification"))();
 
 local PlaceId = game.PlaceId;
 local Supported = {
@@ -37,32 +37,24 @@ return function(script_key)
             Notify.new(5, "Loading, please wait...", nil, Color3.fromRGB(0, 255, 0));
             getfenv(0).script_key = script_key;
             api.load_script();
-            getgenv().Loader = nil;
-            return;
         elseif (status.code == "KEY_HWID_LOCKED") then
             Notify.new(7.5, "Key linked to a different HWID. Please reset it using our Discord bot", nil, Color3.fromRGB(255, 0, 0));
-            getgenv().Loader = nil;
-            return;
         elseif (status.code == "KEY_INCORRECT") then
-            Notify.new(7.5, "Key is wrong or deleted!", nil, Color3.fromRGB(255, 0, 0));
-            getgenv().Loader = nil;
-            return;   
+            Notify.new(7.5, "Key is wrong or deleted!", nil, Color3.fromRGB(255, 0, 0)); 
         else
             Notify.new(7.5, "Key check failed", nil, Color3.fromRGB(255, 0, 0));
-            getgenv().Loader = nil;
-            return;
         end
     else
         if (not script_key) then
             Notify.new(5, "Please enter a key!", nil, Color3.fromRGB(255, 0, 0));
-            getgenv().Loader = nil;
-            return;
         end
         
         if (not Supported[PlaceId]) then
             Notify.new(5, "Unsupported game", nil, Color3.fromRGB(255, 0, 0));
-            getgenv().Loader = nil;
-            return;
         end
     end
+
+    task.delay(1, function()
+        getgenv().Loader = nil;
+    end);
 end
