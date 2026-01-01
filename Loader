@@ -1,12 +1,17 @@
 ------- [ loader ]
 
+if (getgenv().ErrorOccured) then
+    Notify.new(15, "Script errored, rejoin to retry.", nil, Color3.fromRGB(255, 0, 0));
+    return function(...) end;
+end
+
 if (getgenv().Sk22t) then
-    Notify.new(5, "Script is already loaded!", nil, Color3.fromRGB(255, 0, 0));
+    Notify.new(5, "Script is already loaded!", nil, Color3.fromRGB(255, 255, 0));
     return function(...) end;
 end
 
 if (getgenv().Loader) then
-    Notify.new(5, "Wait 5 seconds to re-execute loader!", nil, Color3.fromRGB(255, 0, 0));
+    Notify.new(5, "Wait 5 seconds to re-execute loader!", nil, Color3.fromRGB(255, 255, 0));
     return function(...) end;
 end
 
@@ -41,7 +46,16 @@ return function(script_key)
         if (status.code == "KEY_VALID") then
             Notify.new(5, "Loading, please wait...", nil, Color3.fromRGB(0, 255, 0));
             getfenv(0).script_key = script_key;
-            api.load_script();
+            
+            local Success, Error = pcall(function()
+                api.load_script();
+            end);
+            
+            if (not Success) then
+                Notify.new(15, "Script couldn't load, please report to developer. Rejoin to retry.", nil, Color3.fromRGB(255, 0, 0));
+                getgenv().ErrorOccured = true;
+                return;
+            end
         elseif (status.code == "KEY_HWID_LOCKED") then
             Notify.new(7.5, "Key linked to a different HWID. Please reset it using our Discord bot", nil, Color3.fromRGB(255, 0, 0));
         elseif (status.code == "KEY_INCORRECT") then
